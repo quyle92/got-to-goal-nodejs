@@ -5,6 +5,7 @@ for(i = 0; i < 100; i++) {
         teamName: faker.company.companyName(),
         description: faker.lorem.sentence(15),
         maxPlayer: faker.datatype.number({ 'min': 10, 'max': 50 }),
+        timestamps: true
     })
 }
 module.exports = teams;

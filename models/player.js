@@ -10,7 +10,7 @@ const schema = new Schema({
     bonusPickupStatus: { type: Boolean, default: 0 },
     teamJoinedAt: Date,
     teamDismissedInfo: {
-        teamId: { type: mongoose.Schema.ObjectId, ref: 'Team', required: false },
+        teamId: { type: mongoose.Schema.ObjectId, ref: 'Team'},
         dismissedAt: Date
     },
     isUnlockTeam: Boolean,
@@ -30,8 +30,20 @@ const schema = new Schema({
     compass: Number,
     email: String,
     password: String,
-    playerStatus: { type: String, enum: ['active', 'suspended'], default: 'active'}
-
-});
+    playerStatus: { type: String, enum: ['active', 'suspended'], default: 'active'},
+    characters:[{
+        _id: { type: mongoose.Schema.ObjectId, ref: 'Character' },
+        point: { type: Number, min: 1 },
+        isFavorite: {type: Boolean, default: 0},
+        status: { type: String, enum: ['unlocked', 'selected'], default: 'unlocked' },
+        speed: { type: Number, min: 1, default:1 },
+        passing: { type: Number, min: 1, default:1 },
+        stamina: { type: Number, min: 1, default:1 },
+        shooting: { type: Number, min: 1, default:1 },
+        tackling: { type: Number, min: 1, default:1 },
+        superpowerLevel: { type: Number, min: 1, max:5 },
+        purchased_costumes: [{ type: mongoose.Schema.ObjectId, ref: 'Costume' }]
+    }]
+}, { timestamps: true });
 
 module.exports = mongoose.model('Player', schema);

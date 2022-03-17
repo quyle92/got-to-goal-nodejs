@@ -1,10 +1,13 @@
 const { default: mongoose } = require("mongoose");
 const seeder = require('mongoose-seed');
 const teams = require('./seeders/TeamSeeder');
-const Team = require('./models/team');
-const Player = require('./models/player');
 const playerPromise = require('./seeders/PlayerSeeder');
-
+const characterPromise = require('./seeders/CharacterSeeder');
+const Team = require('./models/team');
+const Costume = require('./models/costume');
+const Player = require('./models/player');
+const Character = require('./models/character');
+const costumes = require('./seeders/CostumeSeeder');
 
 seeder.connect('mongodb://localhost:27017/gtg_nodejs', async function () {
     try {
@@ -15,7 +18,14 @@ seeder.connect('mongodb://localhost:27017/gtg_nodejs', async function () {
 
         await Promise.all([
             Team.insertMany(teams),
+            Costume.insertMany(costumes),
+
         ]);
+        let characters = await characterPromise();
+        await Promise.all([
+            Character.insertMany(characters),
+        ]);
+
         let players = await playerPromise();
         await Promise.all([
             Player.insertMany(players),
@@ -23,7 +33,6 @@ seeder.connect('mongodb://localhost:27017/gtg_nodejs', async function () {
     } catch (err) {
         console.log(err);
     }
-
     seeder.disconnect();
 });
 
