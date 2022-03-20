@@ -61,6 +61,7 @@ let playerPromise = async () =>  {
 
                         let selectCustomes = []
                         while (selectCustomes.length < 3) {
+                            //_sample(): get random element
                             let r = _sample(costumes);
                             if (selectCustomes.indexOf(r) === -1) selectCustomes.push(r);
                         }
