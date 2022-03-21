@@ -21,20 +21,20 @@ seeder.connect('mongodb://localhost:27017/gtg_nodejs', async function () {
         }));
 
         await Promise.all([
-            // Team.insertMany(teams),
-            // Costume.insertMany(costumes),
+            Team.insertMany(teams),
+            Costume.insertMany(costumes),
             Game.insertMany(games),
 
         ]);
-        // let characters = await characterPromise();
-        // await Promise.all([
-        //     Character.insertMany(characters),
-        // ]);
+        let characters = await characterPromise();
+        await Promise.all([
+            Character.insertMany(characters),
+        ]);
 
-        // let players = await playerPromise();
-        // await Promise.all([
-        //     Player.insertMany(players),
-        // ]);
+        let players = await playerPromise();
+        await Promise.all([
+            Player.insertMany(players),
+        ]);
 
         let gamePlayers = await gamePlayerPromise();
         await Promise.all([

@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const schema = new Schema({
     playerName:{type: String, required: true},
@@ -32,7 +33,7 @@ const schema = new Schema({
     password: String,
     playerStatus: { type: String, enum: ['active', 'suspended'], default: 'active'},
     characters:[{
-        _id: { type: mongoose.Schema.ObjectId, ref: 'Character' },
+        _id: { type: mongoose.Schema.ObjectId },
         point: { type: Number, min: 1 },
         isFavorite: {type: Boolean, default: 0},
         status: { type: String, enum: ['unlocked', 'selected'], default: 'unlocked' },
@@ -45,5 +46,7 @@ const schema = new Schema({
         purchased_costumes: [{ type: mongoose.Schema.ObjectId, ref: 'Costume' }]
     }]
 }, { timestamps: true });
+
+schema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Player', schema);

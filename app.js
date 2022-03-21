@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const routes = require('./routes/api');
+
 routes(app);
 app.use((err, req, res, next) => {
     console.log('Lỗi: ', err)

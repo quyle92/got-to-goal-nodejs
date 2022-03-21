@@ -12,7 +12,7 @@ function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
-for(i = 0; i < 10000; i++) {
+for(i = 0; i < 5000; i++) {
     let startedAt = randomDate(new Date(2012, 0, 1), new Date());
     games.push({
         gameMode: _sample(gameMode),

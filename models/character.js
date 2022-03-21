@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const schema = new Schema({
     characterName: String,
@@ -12,5 +13,7 @@ const schema = new Schema({
     default_tackling: Number,
     costumes: [{ type: mongoose.Schema.ObjectId, ref: 'Costume'}]
 }, { timestamps: true });
+
+schema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Character', schema);
