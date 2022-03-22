@@ -14,9 +14,9 @@ const schema = new Schema({
         teamId: { type: mongoose.Schema.ObjectId, ref: 'Team'},
         dismissedAt: Date
     },
-    isUnlockTeam: Boolean,
-    isUnlockH2h: Boolean,
-    isUnlockShop: Boolean,
+    isUnlockTeam: { type: Boolean, default: true},
+    isUnlockH2h: { type: Boolean, default: true},
+    isUnlockShop: { type: Boolean, default: true},
     backgroundColorUrl: String,
     tutorialStartedAt: Date,
     tutorialStepPassed: Number,
@@ -34,16 +34,16 @@ const schema = new Schema({
     playerStatus: { type: String, enum: ['active', 'suspended'], default: 'active'},
     characters:[{
         _id: { type: mongoose.Schema.ObjectId },
-        point: { type: Number, min: 1 },
+        point: { type: Number, min: 1, default: 0},
         isFavorite: {type: Boolean, default: 0},
         status: { type: String, enum: ['unlocked', 'selected'], default: 'unlocked' },
-        speed: { type: Number, min: 1, default:1 },
-        passing: { type: Number, min: 1, default:1 },
-        stamina: { type: Number, min: 1, default:1 },
-        shooting: { type: Number, min: 1, default:1 },
-        tackling: { type: Number, min: 1, default:1 },
-        superpowerLevel: { type: Number, min: 1, max:5 },
-        purchased_costumes: [{ type: mongoose.Schema.ObjectId, ref: 'Costume' }]
+        speed: { type: Number, min: 1 },
+        passing: { type: Number, min: 1 },
+        stamina: { type: Number, min: 1 },
+        shooting: { type: Number, min: 1 },
+        tackling: { type: Number, min: 1 },
+        superpowerLevel: { type: Number, min: 1, max:5, default: 1 },
+        purchased_costumes: [{ type: mongoose.Schema.ObjectId, ref: 'Costume', default: {} }]
     }]
 }, { timestamps: true });
 

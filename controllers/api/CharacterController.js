@@ -12,7 +12,7 @@ class CharacterController {
                     path: 'costumes',
                 }
             });
-            res.jsonSuccess(data);
+            res.responseJson(data);
 
         } catch (error) {
             next(error)

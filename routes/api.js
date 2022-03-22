@@ -1,5 +1,6 @@
 const playerRoutes = require('./players.route');
 const characterRoutes = require('./characters.route');
+const games = require('./games.route');
 const { validationResult } = require('express-validator');
 const Player = require('../models/player');
 
@@ -7,10 +8,17 @@ function route(app) {
     //** Custome middleware
     app.use(function (req, res, next) {
         //api reponse
-        res.jsonSuccess = function (data) {
+        res.responseJson = function (data) {
             return res.status(200).json({
                 status: 'success',
                 data: data
+            });
+        };
+
+        res.respondWithSuccess = function (message) {
+            return res.status(200).json({
+                status: 'success',
+                message: message
             });
         };
 
@@ -30,14 +38,15 @@ function route(app) {
     app.use(async function (req, res, next) {
         // set default max is 100
         if (req.query.limit >= 100) req.query.limit = 100;
-        //set default user.
-        req.body.player = await Player.findOne();
-        // console.log(req.body.player._id)
+        //set default user(req.params.player will not work as  Express will repopulate the req.params object afterwards so we cannot use req.params.player in upcoming middlewares. Ref: https://stackoverflow.com/a/39048447/11297747)
+        req.player = await Player.findOne();
+
         next();
     });
 
     app.use('/api/players', playerRoutes);
     app.use('/api/characters', characterRoutes);
+    app.use('/api/games', gameRoutes);
 
     //** Handling route not found error.
     app.use((req, res, next) => {

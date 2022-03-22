@@ -5,5 +5,6 @@ const { selectCharacterValidator } = require('../validations/selectCharacterVali
 
 router.get('/', PlayerController.index);
 router.post('/select-character', selectCharacterValidator, PlayerController.selectCharacters);
+router.get('/home', PlayerController.getHomeData);
 
 module.exports = router;

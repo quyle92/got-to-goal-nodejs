@@ -9,7 +9,7 @@ exports.selectCharacterValidator = [
             if(!character) {
                 return Promise.reject('Character Id not found');
             }
-            let player = req.body.player;
+            let player = req.player;
             let characterIDList = [];
 
             player.characters.forEach( item => {
@@ -19,6 +19,8 @@ exports.selectCharacterValidator = [
             if (characterIDList.includes(character._id.toString())) {
                 return Promise.reject('Character already selected.');
             }
+
+            req.character = character;
         })
     }),
 

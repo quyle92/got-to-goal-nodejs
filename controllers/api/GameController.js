@@ -1,8 +1,8 @@
 const Player = require('../../models/player');
 const Costume = require('../../models/costume');
 const res = require('express/lib/response');
-const characterService = require('../../services/api/CharacterService');
-class PlayerController {
+const GameService = require('../../services/api/GameService');
+class GameController {
     async index(req, res, next) {
         try {
             let page = req.query.page ?? 1;
@@ -72,4 +72,4 @@ class PlayerController {
 
 }
 
-module.exports = new PlayerController;
+module.exports = new GameController;
