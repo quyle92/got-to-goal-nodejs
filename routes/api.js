@@ -1,5 +1,7 @@
 const playerRoutes = require('./players.route');
 const characterRoutes = require('./characters.route');
+const { validationResult } = require('express-validator');
+const Player = require('../models/player');
 
 function route(app) {
     //** Custome middleware
@@ -12,14 +14,25 @@ function route(app) {
             });
         };
 
+        //** Request validator:
+        req.validateRequest = function () {
+            const errors = validationResult(req);
+            if (!errors.isEmpty())
+                return res.status(422).json({ errors: errors.array() });
+
+            //!! putting next() here  is WRONG  as it will jump over to the next top-level middleware (app.use()).
+            //!! next();
+        }
+
         next();
     });
 
-    app.all(async function (req, res, next) {
+    app.use(async function (req, res, next) {
         // set default max is 100
         if (req.query.limit >= 100) req.query.limit = 100;
         //set default user.
-        req.params.player = await Player.findOne();
+        req.body.player = await Player.findOne();
+        // console.log(req.body.player._id)
         next();
     });
 

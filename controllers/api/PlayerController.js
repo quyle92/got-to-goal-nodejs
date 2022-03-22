@@ -1,5 +1,6 @@
 const Player = require('../../models/player');
 const Costume = require('../../models/costume');
+const res = require('express/lib/response');
 
 class PlayerController {
     async index(req, res, next) {
@@ -19,6 +20,14 @@ class PlayerController {
             });
             res.jsonSuccess(data);
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async selectCharacters(req, res, next) {
+        try {
+            res.json('ok')
         } catch (error) {
             next(error)
         }
