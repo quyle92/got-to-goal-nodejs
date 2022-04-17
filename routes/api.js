@@ -1,6 +1,6 @@
 const playerRoutes = require('./players.route');
 const characterRoutes = require('./characters.route');
-const games = require('./games.route');
+const gameRoutes = require('./games.route');
 const { validationResult } = require('express-validator');
 const Player = require('../models/player');
 
@@ -27,11 +27,11 @@ function route(app) {
             const errors = validationResult(req);
             if (!errors.isEmpty())
                 return res.status(422).json({ errors: errors.array() });
-
+            else
+                return true;
             //!! putting next() here  is WRONG  as it will jump over to the next top-level middleware (app.use()).
             //!! next();
         }
-
         next();
     });
 

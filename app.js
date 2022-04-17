@@ -23,7 +23,7 @@ const routes = require('./routes/api');
 
 routes(app);
 app.use((err, req, res, next) => {
-    console.log('Lỗi: ', err)
+    console.error('Lỗi: ', err)
     res.status(err.status || 500).json({
         error: {
             message: err.message

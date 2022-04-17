@@ -2,7 +2,7 @@ const Player = require('../../models/player');
 const Character = require('../../models/character');
 const res = require('express/lib/response');
 
-class CharacterService{
+class CharacterService {
     async saveCharacterBeforeTutorial(player, character) {
         let characters = [];
         let defaultCharacters = await Character.find({}).limit(3);
@@ -18,7 +18,7 @@ class CharacterService{
                 status: i === 3 ? 'selected' : 'unlocked'
             })
         });
-        console.log(characters.length);
+        // console.log(characters.length);
 
         await Player.where({_id: player._id}).updateOne({$set: {characters: characters} });
     }

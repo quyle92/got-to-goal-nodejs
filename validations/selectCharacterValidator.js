@@ -1,10 +1,12 @@
-const { body, validationResult } = require('express-validator');
+const { body, check } = require('express-validator');
+const req = require('express/lib/request');
+const res = require('express/lib/response');
 const Character = require('../models/character');
 
 exports.selectCharacterValidator = [
-    body('characterId').exists().withMessage('characterId must be present.').
-    isMongoId().withMessage('characterId is not of MongoId format.')
-        .custom((characterId, { req, loc, path } ) => { //(1)
+    body('characterId').exists().withMessage('characterId must be present.').bail().
+        isMongoId().withMessage('characterId is not of MongoDb format.').bail()
+        .custom((characterId, { req, location, path } ) => { //(1)
         return Character.findOne({ _id: characterId }).then(character => {
             if(!character) {
                 return Promise.reject('Character Id not found');
@@ -17,16 +19,16 @@ exports.selectCharacterValidator = [
             });
 
             if (characterIDList.includes(character._id.toString())) {
-                return Promise.reject('Character already selected.');
+                return Promise.reject('Character already selected!');
             }
 
             req.character = character;
+            next();
         })
     }),
 
     (req, res, next) => {
-        req.validateRequest()
-        next();
+        req.validateRequest();
     },
 ];
 

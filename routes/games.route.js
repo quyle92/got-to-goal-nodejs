@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const GameController = require('../controllers/api/GameController');
-const { selectCharacterValidator } = require('../validations/selectCharacterValidator');
+const { updateGameResultValidator } = require('../validations/updateGameResultValidator');
 
-router.get('/', GameController.index);
+router.post('/',  updateGameResultValidator, GameController.updateGameResult);
 
 module.exports = router;
