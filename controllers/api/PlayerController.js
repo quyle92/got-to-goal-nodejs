@@ -2,6 +2,8 @@ const Player = require('../../models/player');
 const Costume = require('../../models/costume');
 const res = require('express/lib/response');
 const characterService = require('../../services/api/CharacterService');
+const _sample = require('lodash/sample');
+
 class PlayerController {
     async index(req, res, next) {
         try {

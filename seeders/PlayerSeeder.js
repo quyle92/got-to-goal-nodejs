@@ -4,6 +4,7 @@ const Character = require('../models/character');
 const bcrypt = require('bcrypt');
 const getRandomItem = require('../utils/');
 const _sample = require('lodash/sample');
+const _shuffle = require('lodash/shuffle');
 
 const { default: mongoose } = require("mongoose");
 
@@ -24,7 +25,8 @@ let playerPromise = async () =>  {
         await Promise.all(
             teamsIdList.map(async function (teamId) {
                 for (let i = 0; i < 10; i++) {
-                    let lastTeam = getRandomItem([...teamsIdList].splice(teamsIdList.indexOf(teamId), 1));
+                    // let lastTeam = getRandomItem([...teamsIdList].splice(teamsIdList.indexOf(teamId), 1));
+                    let lastTeam = _shuffle([...teamsIdList].splice(teamsIdList.indexOf(teamId), 1))[0];
                     //**Character processing */
                     let characters = [];
                     let defaultCharacters = await Character.find({}, { _id: 1, costumes: 1 }).limit(3);
@@ -69,7 +71,6 @@ let playerPromise = async () =>  {
                         characters.push(obj);
 
                     }
-
                     //**End of Character processing */
                     players.push({
                         playerName: faker.company.companyName(),

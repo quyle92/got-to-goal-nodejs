@@ -1,6 +1,4 @@
 const { body, check } = require('express-validator');
-const req = require('express/lib/request');
-const res = require('express/lib/response');
 const Character = require('../models/character');
 
 exports.selectCharacterValidator = [
@@ -8,7 +6,7 @@ exports.selectCharacterValidator = [
         isMongoId().withMessage('characterId is not of MongoDb format.').bail()
         .custom((characterId, { req, location, path } ) => { //(1)
         return Character.findOne({ _id: characterId }).then(character => {
-            if(!character) {
+            if(! character) {
                 return Promise.reject('Character Id not found');
             }
             let player = req.player;

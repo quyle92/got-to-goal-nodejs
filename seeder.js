@@ -15,26 +15,26 @@ const games = require('./seeders/GameSeeder');
 
 seeder.connect('mongodb://localhost:27017/gtg_nodejs', async function () {
     try {
-        let collections = mongoose.connection.collections;
-        await Promise.all(Object.values(collections).map(async (collection) => {
-            await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
-        }));
+        // let collections = mongoose.connection.collections;
+        // await Promise.all(Object.values(collections).map(async (collection) => {
+        //     await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
+        // }));
 
-        await Promise.all([
-            Team.insertMany(teams),
-            Costume.insertMany(costumes),
-            Game.insertMany(games),
+        // await Promise.all([
+        //     Team.insertMany(teams),
+        //     Costume.insertMany(costumes),
+        //     Game.insertMany(games),
 
-        ]);
-        let characters = await characterPromise();
-        await Promise.all([
-            Character.insertMany(characters),
-        ]);
+        // ]);
+        // let characters = await characterPromise();
+        // await Promise.all([
+        //     Character.insertMany(characters),
+        // ]);
 
-        let players = await playerPromise();
-        await Promise.all([
-            Player.insertMany(players),
-        ]);
+        // let players = await playerPromise();
+        // await Promise.all([
+        //     Player.insertMany(players),
+        // ]);
 
         let gamePlayers = await gamePlayerPromise();
         await Promise.all([

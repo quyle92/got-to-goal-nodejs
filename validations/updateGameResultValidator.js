@@ -3,75 +3,72 @@ const req = require('express/lib/request');
 const res = require('express/lib/response');
 const Character = require('../models/character');
 const Player = require('../models/player');
+const findDuplicate = require('../utils/');
 
 exports.updateGameResultValidator = [
-    body('game_mode', 'game_mode was missing.').exists().trim().isIn(['3v3','5v5']),
-    body('tie_breaker', 'tie_breaker was missing.').exists().trim().isIn(['golden_goal','penalty']),
+    body('gameMode', 'gameMode was missing.').exists().trim().isIn(['3v3','5v5']),
+    body('tieBreaker', 'tie_breaker was missing.').exists().trim().isIn(['golden_goal','penalty']),
     body('privacy', 'privacy was missing.').exists().trim().isIn(['public','privacy']),
-    body('result_set', 'result_set was missing.').exists().isArray().custom((result_set, {req, location, path}) => {
-        if(req.body.game_mode == '3v3') {
-            return result_set.length === 3
+    body('resultSet').exists().withMessage('resultSet was missing').isArray().custom((resultSet, {req, location, path}) => {
+        if(req.body.gameMode == '3v3') {
+            return resultSet.length === 3
         }
-        if(req.body.game_mode == '5v5') {
-            return result_set.length === 5
-        }
-    }),
-    body('result_set.*', 'result_set item was not valid.').matches(/^(\d+)-(\d+)$/i),
-    body('player_sn_list', 'player_sn_list was missing.').exists().isArray().custom((result_set, { req, location, path }) => {
-        if (req.body.game_mode == '3v3') {
-            return result_set.length === 6
-        }
-        if (req.body.game_mode == '5v5') {
-            return result_set.length === 10
+        if(req.body.gameMode == '5v5') {
+            return resultSet.length === 5
         }
     }),
-    body('player_sn_list.*').isMongoId().withMessage('player_sn is not valid MongoId.').custom(async (player_sn, { req, location, path }) => {
-        let player_sn_list = req.body.player_sn_list;
+    body('resultSet.*', 'result_set item was not valid.').matches(/^(\d+)-(\d+)$/i),
+    body('playerIdList').exists().withMessage('playerIdList was missing.').isArray().custom((playerIdList, { req, location, path }) => {
+        if (req.body.gameMode == '3v3') {
+            return playerIdList.length === 6
+        }
+        if (req.body.gameMode == '5v5') {
+            return playerIdList.length === 10
+        }
+    }),
+    body('playerIdList.*').isMongoId().withMessage('playerID is not valid MongoId.').custom(async (playerId, { req, location, path }) => {
+        let playerIdList = req.body.playerIdList;
         let count = 0;
-        player_sn_list.forEach( item => {
-            if(item === player_sn) count++;
+        playerIdList.forEach( item => {
+            if(item === playerId) count++;
         });
         if(count > 1) {
-            return Promise.reject(`player_sn ${player_sn} is duplicate!`);
+            return Promise.reject(`playerID ${playerId} is duplicate!`);
         }
 
-        let player = await Player.findOne({ _id: player_sn, playerStatus: 'active' }, { _id: 1 });
+        let player = await Player.findOne({ _id: playerId, playerStatus: 'active' }, { _id: 1 });
         if (! player) return Promise.reject('player id is not in DB.');
     }),
-    body('goal_scored_list').custom((goal_scored_list, { req, location, path}) => {
-        if (req.body.game_mode == '3v3') {
-            return goal_scored_list.length === 6
+    body('goalScoredList').custom((goalScoredList, { req, location, path}) => {
+        if (req.body.gameMode == '3v3') {
+            return goalScoredList.length === 6
         }
-        if (req.body.game_mode == '5v5') {
-            return goal_scored_list.length === 10
-        }
-    }),
-    body('goal_scored_list.*').toInt().isInt({ min: 0 }),
-    body('character_id_list').custom((character_id_list, { req, location, path}) => {
-        if (req.body.game_mode == '3v3') {
-            return character_id_list.length === 6
-        }
-        if (req.body.game_mode == '5v5') {
-            return character_id_list.length === 10
+        if (req.body.gameMode == '5v5') {
+            return goalScoredList.length === 10
         }
     }),
-    body('character_id_list.*').isArray({min:3,max:3}),
-    body('character_id_list.*.*').isMongoId().withMessage('character_id is not valid MongoId.')
-        .custom(async (character_id, { req, location, path}) => {
-        let character_id_list = req.body.character_id_list;
-        let count = 0;
-        character_id_list.forEach( item => {
-            if(item.id === character_id) count++;
-        });
-        if(count > 1) {
-            return Promise.rejec(`character_id ${character_id} is duplicate.`);
+    body('goalScoredList.*').toInt().isInt({ min: 0 }),
+    body('characterIdList').custom((characterIdList, { req, location, path}) => {
+        if (req.body.gameMode == '3v3') {
+            return characterIdList.length === 6
         }
-
-        let character = await Character.findOne({_id: character_id}, {_id: 1});
-        if (! character) return Promise.reject('character id is not in DB.');
+        if (req.body.gameMode == '5v5') {
+            return characterIdList.length === 10
+        }
     }),
-    body('started_at').exists().matches(/Z$/),
-    body('finished_at').exists().matches(/Z$/),
+    body('characterIdList.*').isArray({ min: 3, max: 3 }).custom(async (characterIdList, { req, location, path }) => {
+        let duplicateItem = findDuplicate(characterIdList);
+        if (duplicateItem.length > 0) {
+            return Promise.reject('characterId: ' + duplicateItem.join(',') + ` is duplicate.`);
+        }
+    }),
+    body('characterIdList.*.*').isMongoId().withMessage('characterId is not valid MongoId.')
+        .custom(async (characterId, { req, location, path }) => {
+        let character = await Character.findOne({ _id: characterId }, { _id: 1 });
+        if (! character) return Promise.reject('character id: ' + characterId + ' is not in DB.');
+    }),
+    body('startedAt').exists().matches(/Z$/),
+    body('finishedAt').exists().matches(/Z$/),
 
     (req, res, next) => {
         let rs = req.validateRequest();

@@ -10,16 +10,18 @@ let gamePlayerPromise = async () => {
         let gamePlayers = [];
         let games = await Game.find({});
         games = multipleMongooseToObject(games);
+        // games = games.slice(4995);
         await Promise.all(games.map(async function (game) {
             if (game.gameMode === '3v3') {
                 let player1s = [];
                 for (let i = 0; i < 3; i++) {
                     let player1 = await getRandomPlayer(player1s);
+                    // let characterIdList = await getRandomCharacter();
                     player1s.push(player1);
                     gamePlayers.push({
                         gameId: game._id,
                         playerId: player1,
-                        characterIdList: await getRandomCharacter(),
+                        characterIdList: [],
                         goalScored: faker.datatype.number({ min: 1, max: 10 }),
                         finalResult: i === 2 ? 'disconnected' : 'won',
                         createdAt: game.startedAt
@@ -30,11 +32,12 @@ let gamePlayerPromise = async () => {
                 let player2s = [];
                 for (let i = 0; i < 3; i++) {
                     let player2 = await getRandomPlayer(player2s);
+                    // let characterIdList = await getRandomCharacter();
                     player2s.push(player2);
                     gamePlayers.push({
                         gameId: game._id,
                         playerId: player2,
-                        characterIdList: await getRandomCharacter(),
+                        characterIdList: [],
                         goalScored: faker.datatype.number(1, 10),
                         finalResult: i === 2 ? 'disconnected' : 'lost',
                         createdAt: game.startedAt
@@ -47,11 +50,12 @@ let gamePlayerPromise = async () => {
                 let player1s = [];
                 for (let i = 0; i < 5; i++) {
                     let player1 = await getRandomPlayer(player1s);
+                    // let characterIdList = await getRandomCharacter();
                     player1s.push(player1);
                     gamePlayers.push({
                         gameId: game._id,
                         playerId: player1,
-                        characterIdList: await getRandomCharacter(),
+                        characterIdList: [],
                         goalScored: faker.datatype.number({ min: 1, max: 10 }),
                         finalResult: i === 2 ? 'disconnected' : 'won',
                         createdAt: game.startedAt
@@ -62,21 +66,19 @@ let gamePlayerPromise = async () => {
                 let player2s = [];
                 for (let i = 0; i < 5; i++) {
                     let player2 = await getRandomPlayer(player2s);
+                    // let characterIdList = await getRandomCharacter();
                     player2s.push(player2);
                     gamePlayers.push({
                         gameId: game._id,
                         playerId: player2,
-                        characterIdList: await getRandomCharacter(),
+                        characterIdList: [],
                         goalScored: faker.datatype.number(1, 10),
                         finalResult: i === 2 ? 'disconnected' : 'lost',
                         createdAt: game.startedAt
                     });
                 }
             }
-
-        })
-        )
-        // console.log(gamePlayers)
+        }))
 
         return gamePlayers;
     } catch (error) {
@@ -90,6 +92,7 @@ async function getRandomPlayer(excludedPlayers) {
     do {
         var playerId = _sample(playerIdList);
     } while (excludedPlayers.includes(playerId));
+
     return mongooseToObject(playerId)._id;
 }
 

@@ -1,8 +1,10 @@
 
 module.exports = function getRandomItem(itemList) {
-    Array.prototype.random = function () {
-        return this[Math.floor((Math.random() * this.itemList))];
-    }
+    return itemList[Math.floor(Math.random() * itemList.length)];
+}
 
-    return itemList.random();
+module.exports = function findDuplicate(arr) {
+    return arr.filter((item, index) => {
+        return arr.indexOf(item) !== index
+    });
 }
